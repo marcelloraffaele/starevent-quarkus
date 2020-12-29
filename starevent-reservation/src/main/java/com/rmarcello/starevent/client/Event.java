@@ -1,5 +1,8 @@
 package com.rmarcello.starevent.client;
 
+import java.time.LocalDateTime;
+
+import javax.json.bind.annotation.JsonbDateFormat;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
@@ -20,9 +23,8 @@ public class Event {
     String description;
 
     @NotNull
-    //@JsonbDateFormat("dd/MM/yyyy HH:mm:ss")
-    //LocalDateTime startDate;
-    String startDate;
+    @JsonbDateFormat("dd/MM/yyyy HH:mm:ss")
+    LocalDateTime startDate;
     
     @NotNull
     String where;
@@ -72,11 +74,11 @@ public class Event {
         this.description = description;
     }
 
-    public String getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
