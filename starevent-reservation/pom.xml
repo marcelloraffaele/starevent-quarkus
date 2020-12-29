@@ -32,6 +32,10 @@
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
     </dependency>
     <dependency>
@@ -45,6 +49,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-metrics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-validator</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
