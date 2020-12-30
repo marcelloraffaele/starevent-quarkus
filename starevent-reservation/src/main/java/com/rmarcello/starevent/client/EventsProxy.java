@@ -7,7 +7,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -21,9 +20,10 @@ public interface EventsProxy {
 
     @GET
     @Path("/{id}")
-    public Response getEvent( @PathParam("id") Long id);
+    public Event getEvent( @PathParam("id") Long id);
     
     @PUT
-    public Response updateEvent( Event event );
+    @Path("/reserve/{id}/{amount}")
+    public Event reserve( @PathParam("id") Long id, @PathParam("amount") Long amount );
     
 }

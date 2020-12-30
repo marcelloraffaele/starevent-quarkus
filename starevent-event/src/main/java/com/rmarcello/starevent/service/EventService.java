@@ -17,12 +17,14 @@ import com.rmarcello.starevent.model.Event;
 public class EventService {
 
     //local simple database
-    private Map<Long, Event> eventMap = new HashMap<Long, Event>();
+	private Map<Long, Event> eventMap = new HashMap<Long, Event>();
+	private long currentId=1;
 
 	public List<Event> getAllActiveEvents() {
         final LocalDateTime now = LocalDateTime.now();
         List<Event> eventList = eventMap.values().stream()
-            //.filter( e -> e.getStartDate().isAfter(now) )
+			.filter( e -> e.getStartDate().isAfter(now) )
+			.filter( e -> e.getAvailability() > 0)
             .collect(Collectors.toList());
 		return eventList;
 	}
@@ -32,7 +34,9 @@ public class EventService {
 	}
 
     public @Valid Event persistEvent(@Valid Event event) {
-		eventMap.put( event.getId() , event);
+		event.setId(currentId);
+		currentId++;
+		eventMap.put( event.getId(), event);
 		return eventMap.get(event.getId());
 	}
 	
@@ -54,6 +58,15 @@ public class EventService {
 			.collect(Collectors.toList());
 		Collections.shuffle(eventListCopy);
 		return eventListCopy.get(0);
+	}
+
+	public Event reserve(Long id, Long amount) {
+		if(eventMap.containsKey(id)) {
+			Event e = eventMap.get(id);
+			e.setAvailability( e.getAvailability() - amount.intValue() );
+            return e;
+        }
+        return null;
 	}
 
 	

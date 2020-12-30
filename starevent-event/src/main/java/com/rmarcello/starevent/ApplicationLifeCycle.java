@@ -1,15 +1,11 @@
 package com.rmarcello.starevent;
 
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
 import java.util.stream.IntStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.validation.Valid;
 
-import com.rmarcello.starevent.model.Event;
 import com.rmarcello.starevent.service.EventService;
 import com.rmarcello.starevent.util.EventUtil;
 
@@ -31,7 +27,7 @@ public class ApplicationLifeCycle {
         LOGGER.debug("The application is starting with profile " + ProfileManager.getActiveProfile());
 
         // only for test, create 10 events after start
-        IntStream.range(1, 10)
+        IntStream.range(0, 10)
             .forEach( i-> eventService.persistEvent(EventUtil.createTestEvent(i) ));
 
     }

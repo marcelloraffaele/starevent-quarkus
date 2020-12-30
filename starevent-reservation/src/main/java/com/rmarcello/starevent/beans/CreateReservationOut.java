@@ -1,12 +1,14 @@
-package com.rmarcello.starevent.model;
+package com.rmarcello.starevent.beans;
 
 import java.time.LocalDateTime;
 
+import javax.json.bind.annotation.JsonbDateFormat;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class Reservation {
+public class CreateReservationOut {
 
+    @NotNull
     @Min(0)
     Long id;
 
@@ -19,14 +21,21 @@ public class Reservation {
     @NotNull
     String secureCode;
 
-    @NotNull
+    @JsonbDateFormat("dd/MM/yyyy HH:mm:ss")
     LocalDateTime date;
 
-    public Reservation() {
+    public CreateReservationOut() {}
+
+    public CreateReservationOut(Long id, Long eventId, String userId, String secureCode, LocalDateTime date) {
+        this.id = id;
+        this.eventId = eventId;
+        this.userId = userId;
+        this.secureCode = secureCode;
+        this.date = date;
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -34,7 +43,7 @@ public class Reservation {
     }
 
     public Long getEventId() {
-        return eventId;
+        return this.eventId;
     }
 
     public void setEventId(Long eventId) {
@@ -42,7 +51,7 @@ public class Reservation {
     }
 
     public String getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public void setUserId(String userId) {
@@ -50,7 +59,7 @@ public class Reservation {
     }
 
     public String getSecureCode() {
-        return secureCode;
+        return this.secureCode;
     }
 
     public void setSecureCode(String secureCode) {
@@ -58,7 +67,7 @@ public class Reservation {
     }
 
     public LocalDateTime getDate() {
-        return date;
+        return this.date;
     }
 
     public void setDate(LocalDateTime date) {
@@ -67,9 +76,15 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Reservation [date=" + date + ", eventId=" + eventId + ", id=" + id + ", secureCode=" + secureCode
-                + ", userId=" + userId + "]";
+        return "{" +
+            " id='" + getId() + "'" +
+            ", eventId='" + getEventId() + "'" +
+            ", userId='" + getUserId() + "'" +
+            ", secureCode='" + getSecureCode() + "'" +
+            ", date='" + getDate() + "'" +
+            "}";
     }
+
 
     
 

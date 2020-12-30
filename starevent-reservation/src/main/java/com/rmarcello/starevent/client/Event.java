@@ -11,7 +11,6 @@ import javax.validation.constraints.NotNull;
 
 public class Event {
 
-    @Min(0)
     Long id;
     
     @NotNull

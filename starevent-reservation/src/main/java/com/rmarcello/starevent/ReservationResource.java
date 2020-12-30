@@ -13,9 +13,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
 
+import com.rmarcello.starevent.beans.CreateReservationIn;
+import com.rmarcello.starevent.beans.CreateReservationOut;
 import com.rmarcello.starevent.client.exception.EventNotFoundException;
 import com.rmarcello.starevent.model.Reservation;
 import com.rmarcello.starevent.services.ReservationService;
@@ -47,15 +48,15 @@ public class ReservationResource {
     }
 
     @POST
-    public Response createReservation(@Valid Reservation event, @Context UriInfo uriInfo) {
+    public Response createReservation(@Valid CreateReservationIn req, @Context UriInfo uriInfo) {
 
         try {
-            event = service.persistReservation(event);
+            CreateReservationOut resp = service.createReservation(req);
 
-            UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(event.getId().toString());
+            UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(resp.getId().toString());
             URI location = builder.build();
-            LOGGER.debug("Event reservetion:" + event + ", uri:" + location.toString());
-            return Response.created(location).build();
+            LOGGER.debug("Reservetion created:" + resp + ", uri:" + location.toString());
+            return Response.created(location).entity(resp).build();
 
         } catch (EventNotFoundException e) {
             LOGGER.info("event not found");

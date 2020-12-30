@@ -13,8 +13,8 @@ public class EventUtil {
         e.setStartDate( LocalDateTime.now().plusDays((long)i) );
         e.setWhere("where_"+i);
         e.setAddress("address_"+i);
-        e.setPrice( 100f + i );
-        e.setAvailability( 100 + i);
+        e.setPrice( 5f + i );
+        e.setAvailability( 5 + i);
         return e;
     }
 }

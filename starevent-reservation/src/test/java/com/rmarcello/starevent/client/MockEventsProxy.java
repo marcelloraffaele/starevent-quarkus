@@ -2,6 +2,7 @@ package com.rmarcello.starevent.client;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.Response;
@@ -15,16 +16,30 @@ import io.quarkus.test.Mock;
 @RestClient
 public class MockEventsProxy implements EventsProxy {
 
-    @Override
-    public Response getEvent(Long id) {
-        return Response.ok().entity(createTestEvent(1)).build();
-    }
+    private HashMap<Long, Event> map = new HashMap<>();
 
     @Override
-    public Response updateEvent(Event event) {
-        return Response.ok().entity(event).build();
+    public Event getEvent( Long id){
+        ifNotExsistCreateIt(id);
+
+        return map.get(id);
+    }  
+    
+    @Override
+    public Event reserve( Long id, Long amount ){
+        ifNotExsistCreateIt(id);
+        Event e = map.get(id);
+        e.setAvailability( e.getAvailability()-1 );
+        return e;
     }
     
+    private void ifNotExsistCreateIt(Long id) {
+        if( !map.containsKey(id) ) {
+            Event e = createTestEvent(id.intValue());
+            map.put(id, e);
+        }
+    }
+
     public static Event createTestEvent(int i) {
         Event e = new Event();
         e.setId( (long)i );

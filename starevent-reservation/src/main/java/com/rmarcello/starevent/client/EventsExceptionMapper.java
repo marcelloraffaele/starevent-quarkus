@@ -7,11 +7,11 @@ import com.rmarcello.starevent.client.exception.GenericClientException;
 
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
 
-public class EventsExceptionMapper implements ResponseExceptionMapper<RuntimeException> { // (2)
+public class EventsExceptionMapper implements ResponseExceptionMapper<RuntimeException> {
 
     @Override
     public RuntimeException toThrowable(Response response) {
-        int status = response.getStatus(); // (3)
+        int status = response.getStatus();
 
         RuntimeException re;
         switch (status) {

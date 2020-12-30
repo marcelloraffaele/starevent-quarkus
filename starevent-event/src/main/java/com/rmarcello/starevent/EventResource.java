@@ -89,5 +89,24 @@ public class EventResource {
         return Response.noContent().build();
     }
 
+    @PUT
+    @Path("/reserve/{id}/{amount}")
+    public Response reserve( @PathParam("id") Long id, @PathParam("amount") Long amount ) {
+
+        Optional<Event> event = service.getEventById(id);
+        if (!event.isPresent()) {
+            LOGGER.debug("No event found with id " + id);
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        
+        if ( event.get().getAvailability().intValue()<=0 ) {
+            LOGGER.debug("no availability");
+            return Response.status(Status.NOT_FOUND).build();
+        }
+
+        Event eventRest = service.reserve(id, amount);
+        LOGGER.debug("Event reserved " + eventRest);
+        return Response.ok(eventRest).build();
+    }
 
 }
