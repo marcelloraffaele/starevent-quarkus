@@ -1,19 +1,19 @@
 version: "3"
 services:
   starevent-event:
-    image: "rmarcello/starevent-event:1.0"
+    image: "rmarcello/starevent-event:1.0-rest"
     container_name: "starevent-event"
     ports:
       - "8081:8081"
   starevent-reservation:
-    image: "rmarcello/starevent-reservation:1.0"
+    image: "rmarcello/starevent-reservation:1.0-rest"
     container_name: "starevent-reservation"
     ports:
       - "8082:8082"
     environment:
       - COM_RMARCELLO_STAREVENT_CLIENT_EVENTSPROXY_MP_REST_URL=http://starevent-event:8081
   starevent-frontend:
-    image: "rmarcello/starevent-frontend:1.0"
+    image: "rmarcello/starevent-frontend:1.0-rest"
     container_name: "starevent-frontend"
     ports:
       - "8080:8080"
