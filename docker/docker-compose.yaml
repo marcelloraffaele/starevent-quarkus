@@ -12,3 +12,8 @@ services:
       - "8082:8082"
     environment:
       - COM_RMARCELLO_STAREVENT_CLIENT_EVENTSPROXY_MP_REST_URL=http://starevent-event:8081
+  starevent-frontend:
+    image: "rmarcello/starevent-frontend:1.0"
+    container_name: "starevent-frontend"
+    ports:
+      - "8080:8080"
