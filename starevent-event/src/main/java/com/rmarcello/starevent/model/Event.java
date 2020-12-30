@@ -39,6 +39,8 @@ public class Event {
     @Min(0)
     Integer availability;
 
+    String img;
+
     public Event() {
     }
 
@@ -113,14 +115,21 @@ public class Event {
         this.availability = availability;
     }
 
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
     @Override
     public String toString() {
-        return "Event ["
-            + " id=" + id 
-            + ", address=" + address + ", artist=" + artist + ", availability=" + availability + ", description="
-            + description +  ", price=" + price + ", startDate=" + startDate + ", title=" + title
-            + ", where=" + where + "]";
+        return "Event [address=" + address + ", artist=" + artist + ", availability=" + availability + ", description="
+                + description + ", id=" + id + ", img=" + img + ", price=" + price + ", startDate=" + startDate
+                + ", title=" + title + ", where=" + where + "]";
     }
+
     
     
     

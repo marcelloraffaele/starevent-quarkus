@@ -71,7 +71,7 @@ public class ReservationService {
         Random r = new Random();
         final String possibleChars = "ABCDEFGHILMNOPQRSTUVZWY1234567890";
         String code = IntStream.range(0, 15).boxed()
-            .map( i-> possibleChars.charAt(r.nextInt(possibleChars.length()))+"s")
+            .map( i-> possibleChars.charAt(r.nextInt(possibleChars.length()))+"")
             .collect( Collectors.joining() );
         return code;
     }

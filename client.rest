@@ -30,7 +30,8 @@ curl -X PUT "http://localhost:8081/api/events" -H  "accept: application/json" -H
   "price": 57.50,
   "startDate": "01/07/2021 20:00:00",
   "title": "Carmen Consoli - Tour 2021",
-  "where": "Auditorium Parco della Musica"
+  "where": "Auditorium Parco della Musica",
+  "img": "img/img_1.jpg"
 }' -v
 
 ###
