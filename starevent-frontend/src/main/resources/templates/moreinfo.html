@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <title>StarEvent</title>
+  </head>
+  <body>
+
+    <header>
+        <div class="collapse bg-dark" id="navbarHeader">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm-8 col-md-7 py-4">
+                <h4 class="text-white">About</h4>
+                <p class="text-muted">A microservices event booking application developed using Quarkus</p>
+              </div>
+              <div class="col-sm-4 offset-md-1 py-4">
+                <h4 class="text-white">Contact</h4>
+                <ul class="list-unstyled">
+                  <li><a href="#" class="text-white">Follow on Twitter</a></li>
+                  <li><a href="#" class="text-white">Like on Facebook</a></li>
+                  <li><a href="#" class="text-white">Email me</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+          <div class="container">
+            <a href="#" class="navbar-brand d-flex align-items-center">
+              <strong>StarEvent</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          </div>
+        </div>
+      </header>
+      
+      <main>
+      
+        <div class="album py-5 bg-light">
+          <div class="container">
+            <h1>{event.title}</h1>
+            <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-1">
+                
+              
+              <div class="col">
+                <div class="card shadow-sm">
+                    <img src="/{event.img}" height="225" width="100%">
+                  <div class="card-body">
+                    <p class="card-text title">{event.title}</p>
+                    <p class="card-text description">{event.description}</p>
+                    <p class="card-text date">{event.startDate.format('dd/MM/yyyy HH:mm:ss')}</p>
+                    <p class="card-text where">{event.where}</p>
+                    <p class="card-text address">Address: {event.address}</p>
+                    <p class="card-text price">Price: {event.price}€</p>
+                    <p class="card-text availability">Available: {event.availability}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="btn-group">
+                        <a class="btn btn-sm btn-success" href="/reserve/{event.id}" role="button">Reserve</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>          
+              
+              
+            </div>
+          </div>
+        </div>
+      
+      </main>
+      
+      <footer class="text-muted py-5">
+        <div class="container">
+          <p class="float-end mb-1">
+            <a href="#">Back to top</a>
+          </p>
+          <p class="mb-1">StarEvent is an example project    - rmarcello</p>
+        </div>
+      </footer>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+  </body>
+</html>
