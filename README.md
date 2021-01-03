@@ -3,7 +3,7 @@ A microservices event booking application developed using Quarkus
 
 Images are already pushed on Docker hub, you can use it and jump "image build".
 
-# Deploy on Docker
+## Deploy on Docker
 
 Let's start the application with docker compose:
 ```
@@ -17,7 +17,7 @@ docker-compose -f docker-compose.yaml down
 ```
 
 
-# Deploy on Kubernets
+## Deploy on Kubernets
 
 Let's start the application with docker compose:
 ```
@@ -30,7 +30,7 @@ When you finish testing you can clean everything:
 kubectl delete -f application.yaml
 ```
 
-# Testing the application 
+## Testing the application 
 
 Open a browser on http://localhost:8080
 
@@ -62,18 +62,18 @@ curl -X POST "http://localhost:8081/api/events" -H  "accept: application/json" -
 For many other test open the client.rest file.
 
 
-# Image build
+## Image build
 If you want to rebuild the images:
 
 ```
 cd starevent-event
-mvn package -Dmaven.test.skip=true -Dquarkus.container-image.build=true
+mvn package -Dquarkus.container-image.build=true
 
 cd ..
 cd starevent-reservation
-mvn package -Dmaven.test.skip=true -Dquarkus.container-image.build=true
+mvn package -Dquarkus.container-image.build=true
 
 cd ..
 cd starevent-frontend
-mvn package -Dmaven.test.skip=true -Dquarkus.container-image.build=true
+mvn package -Dquarkus.container-image.build=true
 ```
