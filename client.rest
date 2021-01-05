@@ -6,7 +6,7 @@ curl -X GET http://localhost:8081/api/events
 curl -X GET http://localhost:8081/api/events/random
 
 ### /{id}
-curl -X GET http://localhost:8081/api/events/7
+curl -X GET http://localhost:8081/api/events/3
 
 ### create resource (POST)
 curl -X POST "http://localhost:8081/api/events" -H  "accept: application/json" -H  "Content-Type: application/json" -d '{
@@ -17,20 +17,20 @@ curl -X POST "http://localhost:8081/api/events" -H  "accept: application/json" -
   "price": 100,
   "startDate": "01/07/2021 20:00:00",
   "title": "title 1",
-  "where": "palasport 1"
+  "location": "img/img_1.jpg"
 }' -v
 
-### create resource (PUT)
+### update resource (PUT)
 curl -X PUT "http://localhost:8081/api/events" -H  "accept: application/json" -H  "Content-Type: application/json" -d '{
-  "id": 11,
+  "id": 3,
   "address": "Via Pietro de Coubertin, 30, 00196 Roma RM",
   "artist": "Carmen Consoli",
   "availability": 1000,
   "description": "Carmen Consoli torna con un nuovo tour nel 2021!",
   "price": 57.50,
-  "startDate": "01/07/2021 20:00:00",
+  "startDate": "01/07/2020 20:00:00",
   "title": "Carmen Consoli - Tour 2021",
-  "where": "Auditorium Parco della Musica",
+  "location": "Auditorium Parco della Musica",
   "img": "img/img_1.jpg"
 }' -v
 
@@ -38,7 +38,7 @@ curl -X PUT "http://localhost:8081/api/events" -H  "accept: application/json" -H
 curl -X GET http://localhost:8081/api/events/11
 
 ### DELETE
-curl -X DELETE http://localhost:8081/api/events/11
+curl -X DELETE http://localhost:8081/api/events/3
 
 ##test validation
 ###
@@ -54,6 +54,8 @@ curl -X POST "http://localhost:8081/api/events" -H  "accept: application/json" -
 ## Reservations
 ###############
 ###
+curl -X GET http://localhost:8082/api/reservation
+###
 curl -X POST "http://localhost:8082/api/reservation" -H  "accept: application/json" -H  "Content-Type: application/json" -d '{
   "eventId": "1",
   "userId": "mail@gmail.com"
@@ -62,3 +64,5 @@ curl -X POST "http://localhost:8082/api/reservation" -H  "accept: application/js
 curl -X GET http://localhost:8082/api/reservation/1
 ###
 curl -X GET http://localhost:8081/api/events/1
+###
+curl -X GET http://localhost:8082/api/reservation/user/mail@gmail.com

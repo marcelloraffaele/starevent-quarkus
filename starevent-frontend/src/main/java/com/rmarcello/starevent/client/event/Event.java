@@ -26,7 +26,7 @@ public class Event {
     LocalDateTime startDate;
     
     @NotNull
-    String where;
+    String location;
 
     @NotNull
     String address;
@@ -83,12 +83,12 @@ public class Event {
         this.startDate = startDate;
     }
 
-    public String getWhere() {
-        return where;
+    public String getLocation() {
+        return location;
     }
 
-    public void setWhere(String where) {
-        this.where = where;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getAddress() {
@@ -127,7 +127,7 @@ public class Event {
     public String toString() {
         return "Event [address=" + address + ", artist=" + artist + ", availability=" + availability + ", description="
                 + description + ", id=" + id + ", img=" + img + ", price=" + price + ", startDate=" + startDate
-                + ", title=" + title + ", where=" + where + "]";
+                + ", title=" + title + ", location=" + location + "]";
     }
 
     

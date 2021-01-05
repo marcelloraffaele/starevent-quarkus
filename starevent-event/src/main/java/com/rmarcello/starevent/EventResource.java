@@ -76,9 +76,13 @@ public class EventResource {
 
     @PUT
     public Response updateEvent( @Valid Event event ) {
-        event = service.updateEvent(event);
-        LOGGER.debug("Event updated with new valued " + event);
-        return Response.ok(event).build();
+        Event answer = service.updateEvent(event);
+        LOGGER.debug("Event updated with new valued " + answer);
+        if(answer!=null) {
+            return Response.ok(event).build();
+        }
+        //else
+        return Response.status(Status.NOT_FOUND).build();
     }
 
     @DELETE

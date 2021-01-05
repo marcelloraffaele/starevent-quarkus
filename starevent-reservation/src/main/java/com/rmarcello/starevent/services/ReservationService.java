@@ -1,8 +1,7 @@
 package com.rmarcello.starevent.services;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -10,6 +9,7 @@ import java.util.stream.IntStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import com.rmarcello.starevent.beans.CreateReservationIn;
@@ -17,26 +17,37 @@ import com.rmarcello.starevent.beans.CreateReservationOut;
 import com.rmarcello.starevent.client.Event;
 import com.rmarcello.starevent.client.EventsProxy;
 import com.rmarcello.starevent.model.Reservation;
+import com.rmarcello.starevent.repository.ReservationRepository;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
+@Transactional(Transactional.TxType.REQUIRED)
 public class ReservationService {
 
     private final static Logger LOGGER = Logger.getLogger(ReservationService.class);
 
-
-    //local simple database
-    private Map<Long, Reservation> reservationMap = new HashMap<Long, Reservation>();
-    private long currentId = 1;
+    @Inject
+    ReservationRepository reservationRepository;
 
     @Inject
     @RestClient
     EventsProxy eventClient;
 
+    @Transactional(Transactional.TxType.SUPPORTS)
 	public Optional<Reservation> getReservationById(Long id) {
-		return Optional.ofNullable( reservationMap.get(id) );
+		return reservationRepository.findByIdOptional(id);
+    }
+
+    @Transactional(Transactional.TxType.SUPPORTS)
+	public List<Reservation> getAllByUserId(String userId) {
+		return reservationRepository.getAllByUserId(userId);
+	}
+    
+    @Transactional(Transactional.TxType.SUPPORTS)
+	public List<Reservation> getAll() {
+		return reservationRepository.listAll();
 	}
 
 	public @Valid CreateReservationOut createReservation(@Valid CreateReservationIn req) {
@@ -45,18 +56,16 @@ public class ReservationService {
 		Event e = eventClient.getEvent(req.getEventId());
         LOGGER.debug("e = "+e);
 
+        //call event service for event reservation, and availability decrement
+        eventClient.reserve( e.getId(), 1L);
+
         Reservation reservation = new Reservation();
-        reservation.setId( currentId );
-        currentId++;
         reservation.setEventId( e.getId() );
         reservation.setUserId( req.getUserId() );
         reservation.setSecureCode( generateSecureCode() );
         reservation.setDate( LocalDateTime.now() );
         //persist
-        reservationMap.put( reservation.getId() , reservation);
-
-        //call event service for event reservation, and availability decrement
-        eventClient.reserve( e.getId(), 1L);
+        reservationRepository.persist(reservation);
 
         CreateReservationOut resp = new CreateReservationOut();
         resp.setId( reservation.getId() );

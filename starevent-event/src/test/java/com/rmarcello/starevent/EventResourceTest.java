@@ -1,11 +1,11 @@
 package com.rmarcello.starevent;
 
+import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.common.mapper.TypeRef;
 
 import org.hamcrest.core.Is;
 import org.jboss.logging.Logger;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,26 +18,35 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import com.rmarcello.starevent.model.Event;
+import com.rmarcello.starevent.repository.EventRepository;
 import com.rmarcello.starevent.util.EventUtil;
 
 @QuarkusTest
+@QuarkusTestResource(TestLifecycleManager.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EventResourceTest {
 
     private static Logger LOGGER = Logger.getLogger(EventResourceTest.class);
 
+    private HashMap<Long, Event> eventsMap = new HashMap<>();
     private static int numberOfEvents;
     private static String eventId;
 
     @Test
     @Order(1)
-    public void testBaseEndpoint() {
+    public void testBaseEndpoint() {    
+
         List<Event> eventList = new ArrayList<>();
         eventList = given()
           .when().get("/api/events")
@@ -58,7 +67,8 @@ public class EventResourceTest {
     @Test
     @Order(2)
     void shouldAddAnItem() {
-        Event eventToAdd = EventUtil.createTestEvent(11);
+        
+        Event eventToAdd = EventUtil.createTestEvent();
         LOGGER.debug("adding an event");
         // Persists a new event
         String location = given()
@@ -88,7 +98,7 @@ public class EventResourceTest {
                 .body("description", Is.is(eventToAdd.getDescription()))
                 .body("address", Is.is(eventToAdd.getAddress()))
                 .body("price", Is.is(eventToAdd.getPrice()))
-                .body("where", Is.is(eventToAdd.getWhere()))
+                .body("location", Is.is(eventToAdd.getLocation()))
                 ;
                 
         // Checks there is an event book in the database
@@ -100,7 +110,8 @@ public class EventResourceTest {
     @Test
     @Order(3)
     void updateTest() {
-        Event eventToUpdate = EventUtil.createTestEvent(99);
+
+        Event eventToUpdate = EventUtil.createTestEvent();
         eventToUpdate.setId(Long.parseLong(this.eventId));
 
         LOGGER.debug("updating an event");
@@ -118,7 +129,7 @@ public class EventResourceTest {
                 .body("description", Is.is(eventToUpdate.getDescription()))
                 .body("address", Is.is(eventToUpdate.getAddress()))
                 .body("price", Is.is(eventToUpdate.getPrice()))
-                .body("where", Is.is(eventToUpdate.getWhere()));
+                .body("location", Is.is(eventToUpdate.getLocation()));
         
     }
 

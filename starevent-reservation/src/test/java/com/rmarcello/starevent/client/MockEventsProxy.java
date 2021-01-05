@@ -1,11 +1,9 @@
 package com.rmarcello.starevent.client;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -47,7 +45,7 @@ public class MockEventsProxy implements EventsProxy {
         e.setArtist( "artist_"+i );
         e.setDescription("description_"+i);
         e.setStartDate( LocalDateTime.now().plusDays((long)i) );
-        e.setWhere("where_"+i);
+        e.setLocation("location_"+i);
         e.setAddress("address_"+i);
         e.setPrice( 100f + i );
         e.setAvailability( 100 + i);

@@ -7,7 +7,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.rmarcello.starevent.service.EventService;
-import com.rmarcello.starevent.util.EventUtil;
 
 import org.jboss.logging.Logger;
 
@@ -25,11 +24,6 @@ public class ApplicationLifeCycle {
 
     void onStart(@Observes StartupEvent ev) {
         LOGGER.debug("The application is starting with profile " + ProfileManager.getActiveProfile());
-
-        // only for test, create 10 events after start
-        IntStream.range(0, 10)
-            .forEach( i-> eventService.persistEvent(EventUtil.createTestEvent(i) ));
-
     }
  
     void onStop(@Observes ShutdownEvent ev) {

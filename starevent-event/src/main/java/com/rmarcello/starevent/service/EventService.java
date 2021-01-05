@@ -1,68 +1,68 @@
 package com.rmarcello.starevent.service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import com.rmarcello.starevent.model.Event;
+import com.rmarcello.starevent.repository.EventRepository;
+
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
+@Transactional(Transactional.TxType.REQUIRED)
 public class EventService {
 
-    //local simple database
-	private Map<Long, Event> eventMap = new HashMap<Long, Event>();
-	private long currentId=1;
+	private Logger LOGGER = Logger.getLogger(EventService.class);
 
+	@Inject EventRepository eventRepository;
+	
+	@Transactional(Transactional.TxType.SUPPORTS)
 	public List<Event> getAllActiveEvents() {
         final LocalDateTime now = LocalDateTime.now();
-        List<Event> eventList = eventMap.values().stream()
-			.filter( e -> e.getStartDate().isAfter(now) )
-			.filter( e -> e.getAvailability() > 0)
-            .collect(Collectors.toList());
+        List<Event> eventList = eventRepository.listAvailableEvents(now);
 		return eventList;
 	}
 
+	@Transactional(Transactional.TxType.SUPPORTS)
 	public Optional<Event> getEventById(Long id) {
-		return Optional.ofNullable( eventMap.get(id) );
+		return eventRepository.findByIdOptional( id );
+	}
+
+	@Transactional(Transactional.TxType.SUPPORTS)
+	public Event getRandomEvent() {
+		return eventRepository.findRandom();
+		
 	}
 
     public @Valid Event persistEvent(@Valid Event event) {
-		event.setId(currentId);
-		currentId++;
-		eventMap.put( event.getId(), event);
-		return eventMap.get(event.getId());
+		eventRepository.persist(event);
+		return event;
 	}
 	
 	public @Valid Event updateEvent(@Valid Event event) {
-		eventMap.put( event.getId() , event);
-		return eventMap.get(event.getId());
+		Optional<Event> opt = eventRepository.findByIdOptional(event.getId());
+		if( opt.isPresent() ){
+			eventRepository.getEntityManager().merge(event);
+			return event;
+		}
+		return null;
 	}
 
 	public boolean deleteEvent(Long id) {
-        if(eventMap.containsKey(id)) {
-            eventMap.remove(id);
-            return true;
-        }
-        return false;
+		return eventRepository.deleteById(id);
 	}
-
-	public Event getRandomEvent() {
-		List<Event> eventListCopy = eventMap.values().stream()
-			.collect(Collectors.toList());
-		Collections.shuffle(eventListCopy);
-		return eventListCopy.get(0);
-	}
+	
 
 	public Event reserve(Long id, Long amount) {
-		if(eventMap.containsKey(id)) {
-			Event e = eventMap.get(id);
+		Optional<Event> opt = eventRepository.findByIdOptional(id);
+		if( opt.isPresent() ){
+			Event e = opt.get();
 			e.setAvailability( e.getAvailability() - amount.intValue() );
             return e;
         }

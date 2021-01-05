@@ -1,6 +1,7 @@
 package com.rmarcello.starevent;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -32,19 +33,29 @@ public class ReservationResource {
     ReservationService service;
 
     @GET
+    public Response getAll() {
+        List<Reservation> l = service.getAll();
+        return Response.ok(l).build();
+    }
+
+    @GET
     @Path("/{id}")
     public Response getReservation(@PathParam("id") Long id) {
-
-        Optional<Reservation> event = service.getReservationById(id);
-
-        if (event.isPresent()) {
-            LOGGER.debug("Found reservetion " + event);
-            return Response.ok(event).build();
+        Optional<Reservation> reservation = service.getReservationById(id);
+        if (reservation.isPresent()) {
+            LOGGER.debug("Found reservation " + reservation);
+            return Response.ok(reservation).build();
         } else {
-            LOGGER.debug("No reservetion found with id " + id);
+            LOGGER.debug("No reservation found with id " + id);
             return Response.status(Status.NOT_FOUND).build();
         }
-
+    }
+    
+    @GET
+    @Path("/user/{userId}")
+    public Response getReservationByUserId(@PathParam("userId") String userId) {
+        List<Reservation> list = service.getAllByUserId(userId);
+        return Response.ok(list).build();
     }
 
     @POST
