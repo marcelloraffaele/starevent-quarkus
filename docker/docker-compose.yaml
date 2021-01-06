@@ -1,27 +1,21 @@
-version: "3"
+version: '3.1'
+
 services:
-  starevent-event:
-    image: "rmarcello/starevent-event:1.0-rest"
-    container_name: "starevent-event"
+  db:
+    container_name: "starevent-db"
+    image: mysql:8.0.22
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
     ports:
-      - "8081:8081"
-  starevent-reservation:
-    image: "rmarcello/starevent-reservation:1.0-rest"
-    container_name: "starevent-reservation"
-    ports:
-      - "8082:8082"
+      - 3306:3306
     environment:
-      - COM_RMARCELLO_STAREVENT_CLIENT_EVENTSPROXY_MP_REST_URL=http://starevent-event:8081
-    depends_on:
-      - starevent-event
-  starevent-frontend:
-    image: "rmarcello/starevent-frontend:1.0-rest"
-    container_name: "starevent-frontend"
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./dbinit/:/docker-entrypoint-initdb.d/
+  monitoring:
+    container_name: "starevent-monitoring"
+    image: "prom/prometheus:v2.21.0"
     ports:
-      - "8080:8080"
-    depends_on:
-      - starevent-event
-      - starevent-reservation
-    environment:
-      - COM_RMARCELLO_STAREVENT_CLIENT_EVENT_EVENTSPROXY_MP_REST_URL=http://starevent-event:8081
-      - COM_RMARCELLO_STAREVENT_CLIENT_RESERVATION_RESERVATIONPROXY_MP_REST_URL=http://starevent-reservation:8082
+      - 9090:9090
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml

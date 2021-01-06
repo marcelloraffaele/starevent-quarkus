@@ -69,6 +69,10 @@ public class EventService {
         return null;
 	}
 
+	public long countEvents() {
+		return eventRepository.count();
+	}
+
 	
 
 

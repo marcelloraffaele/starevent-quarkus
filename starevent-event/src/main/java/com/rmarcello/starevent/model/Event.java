@@ -14,6 +14,9 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+@Schema(description = "Event representation")
 @Entity
 @Table(name="event")
 public class Event {
@@ -32,6 +35,7 @@ public class Event {
     @NotNull
     String description;
 
+    @Schema(example = "01/01/2021 00:00:00", pattern = "dd/MM/yyyy HH:mm:ss")
     @JsonbDateFormat("dd/MM/yyyy HH:mm:ss")
     @Column(name = "start_date")
     LocalDateTime startDate;
