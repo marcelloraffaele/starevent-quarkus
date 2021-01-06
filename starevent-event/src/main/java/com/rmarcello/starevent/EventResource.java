@@ -68,6 +68,7 @@ public class EventResource {
 
     @Operation(summary = "Returns a random event")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Event.class)))
+    @Counted(name = "countGetRandomEvent", description = "Counts how many times the random Event method has been invoked")
     @GET
     @Path("/random")
     public Response getRandomEvent() {

@@ -1,7 +1,5 @@
 package com.rmarcello.starevent;
 
-import java.util.stream.IntStream;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
