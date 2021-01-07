@@ -43,7 +43,7 @@ public class IndexResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public TemplateInstance get() {
-        Event randomEvent = eventClient.getRandomBook();
+        Event randomEvent = eventClient.getRandomEvent();
         List<Event> eventList = eventClient.all();
         return index
                 .data("eventList", eventList )

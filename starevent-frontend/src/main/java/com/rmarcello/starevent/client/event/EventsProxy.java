@@ -27,7 +27,7 @@ public interface EventsProxy {
 
     @GET
     @Path("/random")
-    public Event getRandomBook();
+    public Event getRandomEvent();
 
     @GET
     @Path("/{id}")

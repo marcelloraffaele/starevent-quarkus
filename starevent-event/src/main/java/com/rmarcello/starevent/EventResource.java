@@ -58,17 +58,16 @@ public class EventResource {
     @Operation(summary = "Returns all the active events from the database")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Event.class, type = SchemaType.ARRAY)))
     @APIResponse(responseCode = "204", description = "No events")
-    @Counted(name = "countAllEvent", description = "Counts how many times the all Event method has been invoked")
-    @Timed(name = "timeAllEvent", description = "Times how long it takes to invoke the all Event method", unit = MetricUnits.MILLISECONDS)
+    @Timed(name = "EventResource_timeAllEvent", absolute = true, description = "Times how long it takes to invoke the all Event method", unit = MetricUnits.MILLISECONDS)
     @GET
-    public Response all() {
+    public Response allEvent() {
         List<Event> allEvents = service.getAllActiveEvents();
         return Response.ok(allEvents).build();
     }
 
     @Operation(summary = "Returns a random event")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Event.class)))
-    @Counted(name = "countGetRandomEvent", description = "Counts how many times the random Event method has been invoked")
+    @Timed(name = "EventResource_timeGetRandomEvent", absolute = true, description = "Times how long it takes to invoke the getRandomEvent method", unit = MetricUnits.MILLISECONDS)
     @GET
     @Path("/random")
     public Response getRandomEvent() {
@@ -80,8 +79,7 @@ public class EventResource {
     @Operation(summary = "Returns a event for a given id")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Event.class)))
     @APIResponse(responseCode = "404", description = "The event is not found for the given id")
-    @Counted(name = "countGetEvent", description = "Counts how many times the getEvent method has been invoked")
-    @Timed(name = "timeGetEvent", description = "Times how long it takes to invoke the getEvent method", unit = MetricUnits.MILLISECONDS)
+    @Timed(name = "EventResource_timeGetEvent", absolute = true, description = "Times how long it takes to invoke the getEvent method", unit = MetricUnits.MILLISECONDS)
     @GET
     @Path("/{id}")
     public Response getEvent( @Parameter(description = "Event id", required = true) @PathParam("id") Long id) {
@@ -97,8 +95,7 @@ public class EventResource {
     
     @Operation(summary = "Creates a valid event")
     @APIResponse(responseCode = "201", description = "The URI of the created event", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = URI.class)))
-    @Counted(name = "countCreateEvent", description = "Counts how many times the createEvent method has been invoked")
-    @Timed(name = "timeCreateEvent", description = "Times how long it takes to invoke the createEvent method", unit = MetricUnits.MILLISECONDS)
+    @Timed(name = "EventResource_timeCreateEvent", absolute = true, description = "Times how long it takes to invoke the createEvent method", unit = MetricUnits.MILLISECONDS)
     @POST
     public Response createEvent( @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Event.class))) @Valid Event event, @Context UriInfo uriInfo) {
         event = service.persistEvent(event);
@@ -110,8 +107,7 @@ public class EventResource {
 
     @Operation(summary = "Updates an existing event")
     @APIResponse(responseCode = "200", description = "The updated event", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Event.class)))
-    @Counted(name = "countUpdateEvent", description = "Counts how many times the updateEvent method has been invoked")
-    @Timed(name = "timeUpdateEvent", description = "Times how long it takes to invoke the updateEvent method", unit = MetricUnits.MILLISECONDS)
+    @Timed(name = "EventResource_timeUpdateEvent", absolute = true, description = "Times how long it takes to invoke the updateEvent method", unit = MetricUnits.MILLISECONDS)
     @PUT
     public Response updateEvent( @Valid Event event ) {
         Event answer = service.updateEvent(event);
@@ -126,9 +122,10 @@ public class EventResource {
     @Operation(summary = "Delete a event for a given id")
     @APIResponse(responseCode = "204", description = "The event has been successfully deleted")
     @APIResponse(responseCode = "404", description = "The event is not found for the given id")
+    @Counted(name = "EventResource_countDeleteEvent", absolute = true, description = "Counts how many times the deleteEvent method has been invoked")
     @DELETE
     @Path("/{id}")
-    public Response deleteBook(@Parameter(description = "Event id", required = true) @PathParam("id") Long id ) {
+    public Response deleteEvent(@Parameter(description = "Event id", required = true) @PathParam("id") Long id ) {
         service.deleteEvent(id);
         LOGGER.debug("Event deleted: " + id);
         return Response.noContent().build();
@@ -137,8 +134,7 @@ public class EventResource {
     @Operation(summary = "Reserve an event for a given event id and a given amount of ticket. The amount of ticket will be removed from event availability.")
     @APIResponse(responseCode = "200", content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = Event.class)))
     @APIResponse(responseCode = "404", description = "The event is not found for the given id")
-    @Counted(name = "countReserveEvent", description = "Counts how many times the reserve event method has been invoked")
-    @Timed(name = "timeReserveEvent", description = "Times how long it takes to invoke the reserve Event method", unit = MetricUnits.MILLISECONDS)
+    @Timed(name = "EventResource_timeReserveEvent", absolute = true, description = "Times how long it takes to invoke the reserve Event method", unit = MetricUnits.MILLISECONDS)
     @PUT
     @Path("/reserve/{id}/{amount}")
     public Response reserve( @Parameter(description = "Event id", required = true) @PathParam("id") Long id, 

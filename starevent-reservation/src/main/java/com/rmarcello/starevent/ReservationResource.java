@@ -1,6 +1,7 @@
 package com.rmarcello.starevent;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +11,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
@@ -22,6 +25,10 @@ import com.rmarcello.starevent.client.exception.EventNotFoundException;
 import com.rmarcello.starevent.model.Reservation;
 import com.rmarcello.starevent.services.ReservationService;
 
+import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.faulttolerance.Retry;
+import org.eclipse.microprofile.faulttolerance.Timeout;
 import org.jboss.logging.Logger;
 
 @Path("/api/reservation")
@@ -39,6 +46,13 @@ public class ReservationResource {
     }
 
     @GET
+    @Path("/ping")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String ping() {
+        return "ping";
+    }
+
+    @GET
     @Path("/{id}")
     public Response getReservation(@PathParam("id") Long id) {
         Optional<Reservation> reservation = service.getReservationById(id);
@@ -50,7 +64,7 @@ public class ReservationResource {
             return Response.status(Status.NOT_FOUND).build();
         }
     }
-    
+
     @GET
     @Path("/user/{userId}")
     public Response getReservationByUserId(@PathParam("userId") String userId) {
@@ -58,25 +72,29 @@ public class ReservationResource {
         return Response.ok(list).build();
     }
 
+    @Timeout(value = 5000, unit = ChronoUnit.MILLIS)
+    @Fallback(fallbackMethod = "fallbackCreateReservation")
+    @CircuitBreaker(successThreshold = 10, requestVolumeThreshold = 4, failureRatio=0.5, delay = 1000)
     @POST
     public Response createReservation(@Valid CreateReservationIn req, @Context UriInfo uriInfo) {
-
+        LOGGER.info("createReservation - START - req=" + req);
         try {
             CreateReservationOut resp = service.createReservation(req);
-
             UriBuilder builder = uriInfo.getAbsolutePathBuilder().path(resp.getId().toString());
             URI location = builder.build();
             LOGGER.debug("Reservetion created:" + resp + ", uri:" + location.toString());
             return Response.created(location).entity(resp).build();
-
-        } catch (EventNotFoundException e) {
+        } catch ( EventNotFoundException e) {
             LOGGER.info("event not found");
             return Response.status(Status.NOT_FOUND).build();
-        } catch (Exception e) {
-            LOGGER.error("eccezione: "+ e.getMessage(), e);
-            return Response.status(Status.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    public Response fallbackCreateReservation(CreateReservationIn req, UriInfo uriInfo) {
+        LOGGER.info("fallbackCreateReservation: " + req );
+        return Response.status(Status.SERVICE_UNAVAILABLE).build();
+    }
+    
 
 
 }

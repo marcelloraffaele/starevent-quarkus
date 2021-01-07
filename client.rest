@@ -61,6 +61,8 @@ curl -X POST "http://localhost:8082/api/reservation" -H  "accept: application/js
   "userId": "mail@gmail.com"
 }' -v
 ###
+curl -X GET http://localhost:8082/api/reservation
+###
 curl -X GET http://localhost:8082/api/reservation/1
 ###
 curl -X GET http://localhost:8081/api/events/1
@@ -75,3 +77,5 @@ curl -X GET "http://localhost:8081/metrics" -H  "accept: application/json"
 ###
 curl -X GET "http://localhost:8081/metrics/application" -H  "accept: application/json"
 
+###
+curl -X GET http://localhost:8081/api/events

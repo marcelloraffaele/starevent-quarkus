@@ -85,4 +85,8 @@ public class ReservationService {
         return code;
     }
 
+	public long countReservations() {
+		return reservationRepository.count();
+	}
+
 }
