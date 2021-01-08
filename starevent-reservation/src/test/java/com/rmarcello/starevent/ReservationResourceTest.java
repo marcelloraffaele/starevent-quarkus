@@ -6,10 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Random;
 
@@ -19,39 +17,32 @@ import javax.ws.rs.core.Response.Status;
 
 import com.rmarcello.starevent.beans.CreateReservationIn;
 import com.rmarcello.starevent.model.Reservation;
-import com.rmarcello.starevent.repository.ReservationRepository;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.Is;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
+import io.quarkus.panache.mock.PanacheMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 
 @QuarkusTest
 public class ReservationResourceTest {
 
     private static Logger LOGGER = Logger.getLogger(ReservationResourceTest.class);
 
-    @InjectMock
-    ReservationRepository reservationRepository;
 
     @Test
     public void createAndCheck() {
+
         final long ID = 12345L;
-        // prepare mock
-        Reservation r = createRandomReservation();
-        Mockito.doReturn(Optional.of(r)).when(reservationRepository).findByIdOptional(any(Long.class));
-        Mockito.doAnswer(invocation -> {
-            Reservation in = invocation.getArgument(0);
-            in.setId(ID);
-            return null;
-        }).when(reservationRepository).persist(isA(Reservation.class));
+        final Reservation r = createRandomReservation();
+
+        //initialize mock
+        PanacheMock.mock(Reservation.class);
+        PanacheMock.doReturn( Optional.of(r) ).when(Reservation.class).findByIdOptional(ID);
+        PanacheMock.doAnswer(new AssignIdToReservation(ID)).when(Reservation.class).doPersist(any(Reservation.class));
 
         // test logic
         CreateReservationIn cri = createRandomReservationIn(r);
@@ -80,27 +71,28 @@ public class ReservationResourceTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .body("eventId", Is.is(cri.getEventId().intValue()))
                 .body("userId", Is.is(cri.getUserId()))
-                .body("secureCode", Is.is(r.getSecureCode()))
-                .body("date", Is.is( matchDate(r.getDate() ) ));
+                .body("secureCode", Is.is(r.secureCode))
+                .body("date", Is.is( matchDate(r.date ) ));
 
+        
     }
 
 
     private CreateReservationIn createRandomReservationIn(Reservation reservation) {
         CreateReservationIn r = new CreateReservationIn();
-        r.setEventId(reservation.getEventId());
-        r.setUserId(reservation.getUserId());
+        r.setEventId(reservation.eventId);
+        r.setUserId(reservation.userId);
         return r;
     }
 
     private Reservation createRandomReservation() {
         Random random = new Random();
         Reservation r = new Reservation();
-        r.setId((long) random.nextInt(100));
-        r.setEventId((long) random.nextInt(100));
-        r.setUserId("user_" + random.nextInt(100));
-        r.setSecureCode("sc_" + random.nextInt(100));
-        r.setDate(LocalDateTime.now());
+        r.id= (long) random.nextInt(100);
+        r.eventId =(long) random.nextInt(100);
+        r.userId = "user_" + random.nextInt(100);
+        r.secureCode ="sc_" + random.nextInt(100);
+        r.date = LocalDateTime.now();
         return r;
     }
 

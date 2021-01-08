@@ -1,8 +1,22 @@
 package com.rmarcello.starevent;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.common.mapper.TypeRef;
+import static io.restassured.RestAssured.given;
+import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.NO_CONTENT;
+import static javax.ws.rs.core.Response.Status.OK;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+
+import com.rmarcello.starevent.model.Event;
+import com.rmarcello.starevent.util.EventUtil;
 
 import org.hamcrest.core.Is;
 import org.jboss.logging.Logger;
@@ -11,26 +25,9 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import static javax.ws.rs.core.Response.Status.*;
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-
-import com.rmarcello.starevent.model.Event;
-import com.rmarcello.starevent.repository.EventRepository;
-import com.rmarcello.starevent.util.EventUtil;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.common.mapper.TypeRef;
 
 @QuarkusTest
 @QuarkusTestResource(TestLifecycleManager.class)
@@ -39,7 +36,6 @@ public class EventResourceTest {
 
     private static Logger LOGGER = Logger.getLogger(EventResourceTest.class);
 
-    private HashMap<Long, Event> eventsMap = new HashMap<>();
     private static int numberOfEvents;
     private static String eventId;
 

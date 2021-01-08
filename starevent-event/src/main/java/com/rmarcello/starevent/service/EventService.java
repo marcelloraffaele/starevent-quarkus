@@ -12,13 +12,11 @@ import javax.validation.Valid;
 import com.rmarcello.starevent.model.Event;
 import com.rmarcello.starevent.repository.EventRepository;
 
-import org.jboss.logging.Logger;
-
 @ApplicationScoped
 @Transactional(Transactional.TxType.REQUIRED)
 public class EventService {
 
-	private Logger LOGGER = Logger.getLogger(EventService.class);
+	//private Logger LOGGER = Logger.getLogger(EventService.class);
 
 	@Inject EventRepository eventRepository;
 	

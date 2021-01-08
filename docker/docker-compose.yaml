@@ -9,22 +9,23 @@ services:
     ports:
       - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+#      MYSQL_ROOT_PASSWORD: yoursupersecretpassword
     volumes:
       - ./dbinit/:/docker-entrypoint-initdb.d/
-  prometeus:
-    container_name: "starevent-monitoring-prometheus"
-    image: "prom/prometheus:v2.21.0"
-    ports:
-      - 9090:9090
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-  grafana:
-    container_name: "starevent-monitoring-grafana"
-    image: grafana/grafana
-    ports:
-      - 3000:3000
-    volumes: 
-      - ./monitoring/grafana-dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
-      - ./monitoring/grafana-ds.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
-      - ./monitoring/grafana-dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+  #prometeus:
+  #  container_name: "starevent-monitoring-prometheus"
+  #  image: "prom/prometheus:v2.21.0"
+  #  ports:
+  #    - 9090:9090
+  #  volumes:
+  #    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #grafana:
+  #  container_name: "starevent-monitoring-grafana"
+  #  image: grafana/grafana
+  #  ports:
+  #    - 3000:3000
+  #  volumes: 
+  #    - ./monitoring/grafana-dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+  #    - ./monitoring/grafana-ds.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+  #    - ./monitoring/grafana-dashboard.json:/var/lib/grafana/dashboards/dashboard.json
