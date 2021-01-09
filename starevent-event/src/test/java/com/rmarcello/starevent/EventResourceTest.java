@@ -1,72 +1,97 @@
 package com.rmarcello.starevent;
 
 import static io.restassured.RestAssured.given;
-import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static javax.ws.rs.core.Response.Status.OK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 
 import com.rmarcello.starevent.model.Event;
+import com.rmarcello.starevent.repository.EventRepository;
+import com.rmarcello.starevent.util.AssignIdToEvent;
 import com.rmarcello.starevent.util.EventUtil;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.core.Is;
-import org.jboss.logging.Logger;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mockito;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
+import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.http.ContentType;
+import io.restassured.internal.mapping.JsonbMapper;
+import io.restassured.path.json.mapper.factory.DefaultYassonObjectMapperFactory;
 
 @QuarkusTest
-@QuarkusTestResource(TestLifecycleManager.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class EventResourceTest {
 
-    private static Logger LOGGER = Logger.getLogger(EventResourceTest.class);
+    @InjectMock
+    EventRepository eventRepository;
 
-    private static int numberOfEvents;
-    private static String eventId;
+    @BeforeAll
+    public static void init(){
+        //Configure the default Rest Assured Mapper to Jsonb mapper. By default RestAssured try to find other mapper and the test could fail.
+        //https://github.com/rest-assured/rest-assured/blob/master/examples/rest-assured-itest-java/src/test/java/io/restassured/itest/java/CustomObjectMappingITest.java
+        //info at https://www.javadoc.io/doc/io.rest-assured/rest-assured/latest/io/restassured/internal/mapping/JsonbMapper.html
+        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(ObjectMapperConfig.objectMapperConfig().defaultObjectMapper(  new JsonbMapper(new DefaultYassonObjectMapperFactory()) ) );
 
+    }
+    
     @Test
     @Order(1)
     public void testBaseEndpoint() {    
-
-        List<Event> eventList = new ArrayList<>();
-        eventList = given()
-          .when().get("/api/events")
+        // generate a list of 3 events
+        List<Event> originEvent = IntStream.rangeClosed(1,3).boxed().map( i-> EventUtil.createTestEvent(true) ).collect(Collectors.toList());
+        //mock the repository to return this list
+        Mockito.when( eventRepository.listAvailableEvents(any(LocalDateTime.class)) ).thenReturn( originEvent );
+        //invoke the resource and parse the body
+        List<Event> eventList = given()
+          .when()
+          .accept(ContentType.JSON)  
+          .get("/api/events")
           .then()
              .statusCode(OK.getStatusCode())
              .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-             .extract().body().as(getEventTypeRef());
-
-        numberOfEvents=eventList.size();
-        LOGGER.debug("numberOfEvents="+numberOfEvents);
+             .extract().body().as( new TypeRef<List<Event>>() {} );
+        //check if the resource list is equal to mocked list
+        assertEquals(originEvent, eventList, "check if the resource list is equal to mocked list");
+        
     }
 
-    private TypeRef<List<Event>> getEventTypeRef() {
-        return new TypeRef<List<Event>>() {
-        };
-    }
-
+    
     @Test
     @Order(2)
-    void shouldAddAnItem() {
-        
-        Event eventToAdd = EventUtil.createTestEvent();
-        LOGGER.debug("adding an event");
-        // Persists a new event
+    void createEvent() {
+        //init mocked objects
+        Event eventToAdd = EventUtil.createTestEvent(false);
+        long createID= 12345;       
+        //mock the repository persist method, it will set the Id on the event during create
+        Mockito.doAnswer(new AssignIdToEvent(createID) ).when( eventRepository ).persist(any(Event.class));
+        //invoke the resource and get the location header
         String location = given()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(eventToAdd)
@@ -74,76 +99,98 @@ public class EventResourceTest {
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
                 .when().post("/api/events")
                 .then()
-                    .statusCode(CREATED.getStatusCode()).extract().header("Location");
-        LOGGER.debug("created: " + location);
-
-        // Extracts the Location and stores the event id
+                    .statusCode(Status.CREATED.getStatusCode()).extract().header("Location");
+        //assertions
         assertTrue(location.contains("/api/events"));
         String[] segments = location.split("/");
-        eventId = segments[segments.length - 1];
-        assertNotNull(eventId);
-        LOGGER.debug("eventId: " + eventId);
+        long createdEventId = Long.parseLong( segments[segments.length - 1] );
+        assertNotNull(createdEventId);        
+        assertEquals(createID, createdEventId, "check if location Id is equal to mocked id");
 
-        // Checks the event has been created
-        given()
-            .pathParam("id", eventId)
-            .when().get("/api/events/{id}")
-                .then().statusCode(OK.getStatusCode())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .body("title", Is.is(eventToAdd.getTitle()))
-                .body("description", Is.is(eventToAdd.getDescription()))
-                .body("address", Is.is(eventToAdd.getAddress()))
-                .body("price", Is.is(eventToAdd.getPrice()))
-                .body("location", Is.is(eventToAdd.getLocation()))
-                ;
-                
-        // Checks there is an event book in the database
-        List<Event> events = given().when().get("/api/events").then().statusCode(OK.getStatusCode())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON).extract().body().as(getEventTypeRef());
-        assertEquals(numberOfEvents + 1, events.size());
     }
 
     @Test
     @Order(3)
+    void getEventOK() {
+        // generate a an event
+        Event originEvent =EventUtil.createTestEvent(true);
+        //mock the repository to return the created event
+        Mockito.when( eventRepository.findByIdOptional(any(Long.class)) ).thenReturn( Optional.of(originEvent) );
+        //invoke the resource and get event
+        Event event = given()
+            .pathParam("id", originEvent.getId() )
+            .when().get("/api/events/{id}")
+                .then().statusCode(OK.getStatusCode())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .extract().body().as( new TypeRef<Event>() {} );
+        assertNotNull(event);        
+        assertEquals(originEvent, event, "check if the event is equal to mocked event");
+    }
+
+    @Test
+    @Order(4)
+    void getEvent_NOT_FOUND() {
+        // generate a an event
+        Event originEvent = null;
+        //mock the repository to return the created event
+        Mockito.when( eventRepository.findByIdOptional(any(Long.class)) ).thenReturn( Optional.ofNullable(originEvent) );
+        //invoke the resource and get event
+        given()
+            .pathParam("id", 1L )
+            .when().get("/api/events/{id}")
+                .then().statusCode(NOT_FOUND.getStatusCode());
+
+    }
+    
+    @Test
+    @Order(5)
     void updateTest() {
+        // generate a an event
+        Event originEvent = EventUtil.createTestEvent(true);
+        Event updatedEvent = EventUtil.createTestEvent(false);
+        updatedEvent.setId(originEvent.getId());
+        //mock the repository
+        Mockito.when( eventRepository.findByIdOptional(any(Long.class)) ).thenReturn( Optional.ofNullable(originEvent) );
+        Mockito.when( eventRepository.update(any(Event.class)) ).thenReturn( updatedEvent );
 
-        Event eventToUpdate = EventUtil.createTestEvent();
-        eventToUpdate.setId(Long.parseLong(this.eventId));
-
-        LOGGER.debug("updating an event");
         // updating an event
         given()
             .contentType(MediaType.APPLICATION_JSON)
-            .body(eventToUpdate)
+            .body(updatedEvent)
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
             .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON)
             .when().put("/api/events")
             .then()
                 .statusCode(OK.getStatusCode())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .body("title", Is.is(eventToUpdate.getTitle()))
-                .body("description", Is.is(eventToUpdate.getDescription()))
-                .body("address", Is.is(eventToUpdate.getAddress()))
-                .body("price", Is.is(eventToUpdate.getPrice()))
-                .body("location", Is.is(eventToUpdate.getLocation()));
+                .body( "id", Is.is(originEvent.getId().intValue()) )
+                .body("title", Is.is(updatedEvent.getTitle()))
+                .body("description", Is.is(updatedEvent.getDescription()))
+                .body("address", Is.is(updatedEvent.getAddress()))
+                .body("price", Is.is(updatedEvent.getPrice()))
+                .body("location", Is.is(updatedEvent.getLocation()))
+                .body("startDate", matchDate(updatedEvent.getStartDate() ));
         
     }
 
     @Test
-    @Order(4)
+    @Order(6)
     void deleteTest() {
-        
-        LOGGER.debug("deleting an event");
+        long ID = 123;
+        //mock the repository
+        Mockito.when( eventRepository.deleteById(any(Long.class)) ).thenReturn( true );
         // deleting an event
         given()
-            .pathParam("id", eventId)
+            .pathParam("id", ID)
             .when().delete("/api/events/{id}")
                 .then().statusCode( NO_CONTENT.getStatusCode());
         
-        // Checks deletion
-        given()
-        .pathParam("id", eventId)
-        .when().get("/api/events/{id}")
-            .then().statusCode(NOT_FOUND.getStatusCode());
     }
+
+    private Matcher<String> matchDate(LocalDateTime d) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String str = d.format(fmt);
+        return Matchers.equalTo( str );
+    }
+    
 }

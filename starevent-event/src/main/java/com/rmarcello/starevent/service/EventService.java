@@ -12,18 +12,21 @@ import javax.validation.Valid;
 import com.rmarcello.starevent.model.Event;
 import com.rmarcello.starevent.repository.EventRepository;
 
+import org.jboss.logging.Logger;
+
 @ApplicationScoped
 @Transactional(Transactional.TxType.REQUIRED)
 public class EventService {
 
-	//private Logger LOGGER = Logger.getLogger(EventService.class);
+	private Logger LOGGER = Logger.getLogger(EventService.class);
 
 	@Inject EventRepository eventRepository;
 	
 	@Transactional(Transactional.TxType.SUPPORTS)
 	public List<Event> getAllActiveEvents() {
         final LocalDateTime now = LocalDateTime.now();
-        List<Event> eventList = eventRepository.listAvailableEvents(now);
+		List<Event> eventList = eventRepository.listAvailableEvents(now);
+		LOGGER.debug("eventList: " + eventList);
 		return eventList;
 	}
 
@@ -46,7 +49,7 @@ public class EventService {
 	public @Valid Event updateEvent(@Valid Event event) {
 		Optional<Event> opt = eventRepository.findByIdOptional(event.getId());
 		if( opt.isPresent() ){
-			eventRepository.getEntityManager().merge(event);
+			eventRepository.update(event);
 			return event;
 		}
 		return null;

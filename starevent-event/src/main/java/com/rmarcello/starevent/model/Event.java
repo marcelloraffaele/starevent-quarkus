@@ -1,6 +1,7 @@
 package com.rmarcello.starevent.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.persistence.Column;
@@ -18,28 +19,27 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Schema(description = "Event representation")
 @Entity
-@Table(name="event")
+@Table(name = "event")
 public class Event {
 
-    @Min(0)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id", updatable = false, nullable = false)
     Long id;
-    
+
     @NotNull
     String title;
-    
+
     String artist;
 
     @NotNull
     String description;
 
     @Schema(example = "01/01/2021 00:00:00", pattern = "dd/MM/yyyy HH:mm:ss")
-    @JsonbDateFormat("dd/MM/yyyy HH:mm:ss")
     @Column(name = "start_date")
+    @JsonbDateFormat("dd/MM/yyyy HH:mm:ss")
     LocalDateTime startDate;
-    
+
     @NotNull
     String location;
 
@@ -47,7 +47,7 @@ public class Event {
     String address;
 
     @DecimalMin(value = "0.0", inclusive = true)
-    @Digits(integer=3, fraction=2)
+    @Digits(integer = 3, fraction = 2)
     Float price;
 
     @NotNull
@@ -143,4 +143,93 @@ public class Event {
                 + ", title=" + title + ", location=" + location + "]";
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((address == null) ? 0 : address.hashCode());
+        result = prime * result + ((artist == null) ? 0 : artist.hashCode());
+        result = prime * result + ((availability == null) ? 0 : availability.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((img == null) ? 0 : img.hashCode());
+        result = prime * result + ((location == null) ? 0 : location.hashCode());
+        result = prime * result + ((price == null) ? 0 : price.hashCode());
+        result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+        result = prime * result + ((title == null) ? 0 : title.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Event other = (Event) obj;
+        if (address == null) {
+            if (other.address != null)
+                return false;
+        } else if (!address.equals(other.address))
+            return false;
+        if (artist == null) {
+            if (other.artist != null)
+                return false;
+        } else if (!artist.equals(other.artist))
+            return false;
+        if (availability == null) {
+            if (other.availability != null)
+                return false;
+        } else if (!availability.equals(other.availability))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (img == null) {
+            if (other.img != null)
+                return false;
+        } else if (!img.equals(other.img))
+            return false;
+        if (location == null) {
+            if (other.location != null)
+                return false;
+        } else if (!location.equals(other.location))
+            return false;
+        if (price == null) {
+            if (other.price != null)
+                return false;
+        } else if (!price.equals(other.price))
+            return false;
+
+        if (startDate == null && other.startDate != null) {
+            return false;
+        } else if (startDate != null && other.startDate == null) {
+            return false;
+        } else {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            String startDateStr = startDate.format(fmt);
+            String otherStartDateStr = other.startDate.format(fmt);
+            if (!startDateStr.equals(otherStartDateStr))
+                return false;
+        }
+
+        if (title == null) {
+            if (other.title != null)
+                return false;
+        } else if (!title.equals(other.title))
+            return false;
+        return true;
+    }
+
+
+    
 }

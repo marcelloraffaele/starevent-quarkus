@@ -24,5 +24,8 @@ public class EventRepository implements PanacheRepository<Event> {
         return this.findAll().page(randomPage, 1).firstResult();
 	}
 
+	public Event update(Event e) {
+		return getEntityManager().merge(e);
+	}
 
 }
