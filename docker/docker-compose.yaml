@@ -1,7 +1,7 @@
 version: '3.1'
 
 services:
-  db:
+  starevent-db:
     container_name: "starevent-db"
     image: mysql:8.0.22
     command: --default-authentication-plugin=mysql_native_password
@@ -10,22 +10,59 @@ services:
       - 3306:3306
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
-#      MYSQL_ROOT_PASSWORD: yoursupersecretpassword
     volumes:
       - ./dbinit/:/docker-entrypoint-initdb.d/
-  #prometeus:
-  #  container_name: "starevent-monitoring-prometheus"
-  #  image: "prom/prometheus:v2.21.0"
-  #  ports:
-  #    - 9090:9090
-  #  volumes:
-  #    - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-  #grafana:
-  #  container_name: "starevent-monitoring-grafana"
-  #  image: grafana/grafana
-  #  ports:
-  #    - 3000:3000
-  #  volumes: 
-  #    - ./monitoring/grafana-dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
-  #    - ./monitoring/grafana-ds.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
-  #    - ./monitoring/grafana-dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+  starevent-event:
+    image: "rmarcello/starevent-event:1.1-monitoring"
+    container_name: "starevent-event"
+    ports:
+      - "8081:8081"
+    environment:
+      - QUARKUS_DATASOURCE_PASSWORD=password
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:mysql://starevent-db:3306/eventdb 
+    depends_on:
+      - starevent-db
+  starevent-reservation:
+    image: "rmarcello/starevent-reservation:1.1-monitoring"
+    container_name: "starevent-reservation"
+    ports:
+      - "8082:8082"
+    environment:
+      - COM_RMARCELLO_STAREVENT_CLIENT_EVENTSPROXY_MP_REST_URL=http://starevent-event:8081
+      - QUARKUS_DATASOURCE_PASSWORD=password
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:mysql://starevent-db:3306/reservationdb
+    depends_on:
+      - starevent-event
+  starevent-frontend:
+    image: "rmarcello/starevent-frontend:1.1-monitoring"
+    container_name: "starevent-frontend"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - starevent-event
+      - starevent-reservation
+    environment:
+      - COM_RMARCELLO_STAREVENT_CLIENT_EVENT_EVENTSPROXY_MP_REST_URL=http://starevent-event:8081
+      - COM_RMARCELLO_STAREVENT_CLIENT_RESERVATION_RESERVATIONPROXY_MP_REST_URL=http://starevent-reservation:8082  
+  #moitoring
+  starevent-prometheus:
+    container_name: "starevent-prometheus"
+    image: "prom/prometheus:v2.21.0"
+    ports:
+      - 9090:9090
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - starevent-event
+      - starevent-reservation
+  starevent-grafana:
+    container_name: "starevent-grafana"
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    volumes: 
+      - ./monitoring/grafana-dashboard.yaml:/etc/grafana/provisioning/dashboards/dashboard.yaml
+      - ./monitoring/grafana-ds.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ./monitoring/grafana-dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+    depends_on:
+      - starevent-prometheus

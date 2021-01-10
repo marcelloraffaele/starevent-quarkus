@@ -17,8 +17,9 @@ datasources:
     access: direct
 #   # <int> org id. will default to orgId 1 if not specified
     orgId: 1
-#   # <string> url
+#   # <string> url host.docker.internal
     url: http://host.docker.internal:9090
+#    url: http://starevent-prometheus:9090
 #   # <string> database password, if used
 #   password:
 #   # <string> database user, if used
