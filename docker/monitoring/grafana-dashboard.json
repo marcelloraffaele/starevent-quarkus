@@ -22,7 +22,10 @@
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -42,7 +45,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 21,
         "x": 0,
         "y": 0
       },
@@ -63,15 +66,212 @@
         {
           "expr": "application_EventResource_timeAllEvent_rate_per_second",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "AllEvent",
           "queryType": "randomWalk",
           "refId": "A"
+        },
+        {
+          "expr": "application_EventResource_timeCreateEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "CreateEvent",
+          "refId": "B"
+        },
+        {
+          "expr": "application_EventResource_timeGetEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "GetEvent",
+          "refId": "C"
+        },
+        {
+          "expr": "application_EventResource_timeGetRandomEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "GetRandomEvent",
+          "refId": "D"
+        },
+        {
+          "expr": "application_EventResource_timeUpdateEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "UpdateEvent",
+          "refId": "E"
+        },
+        {
+          "expr": "application_EventResource_timeReserveEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "ReserveEvent",
+          "refId": "H"
+        },
+        {
+          "expr": "application_ReservationResource_createReservation_rate_per_second",
+          "interval": "",
+          "legendFormat": "createReservation",
+          "refId": "F"
+        },
+        {
+          "expr": "application_ReservationResource_getReservation_rate_per_second",
+          "interval": "",
+          "legendFormat": "getReservation",
+          "refId": "G"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Panel Title",
+      "title": "Rate Per Second",
       "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 21,
+        "x": 0,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.6",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "application_EventResource_timeAllEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "AllEvent",
+          "queryType": "randomWalk",
+          "refId": "A"
+        },
+        {
+          "expr": "application_EventResource_timeCreateEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "CreateEvent",
+          "refId": "B"
+        },
+        {
+          "expr": "application_EventResource_timeGetEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "GetEvent",
+          "refId": "C"
+        },
+        {
+          "expr": "application_EventResource_timeGetRandomEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "GetRandomEvent",
+          "refId": "D"
+        },
+        {
+          "expr": "application_EventResource_timeUpdateEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "UpdateEvent",
+          "refId": "E"
+        },
+        {
+          "expr": "application_EventResource_timeReserveEvent_rate_per_second",
+          "interval": "",
+          "legendFormat": "ReserveEvent",
+          "refId": "H"
+        },
+        {
+          "expr": "application_ReservationResource_createReservation_rate_per_second",
+          "interval": "",
+          "legendFormat": "createReservation",
+          "refId": "F"
+        },
+        {
+          "expr": "application_ReservationResource_getReservation_rate_per_second",
+          "interval": "",
+          "legendFormat": "getReservation",
+          "refId": "G"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Rate Per Second",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -92,7 +292,7 @@
         "h": 12,
         "w": 21,
         "x": 0,
-        "y": 8
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 2,
@@ -124,39 +324,51 @@
         {
           "expr": "application_EventResource_countDeleteEvent_total",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "DeleteEvent",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
           "expr": "application_EventResource_timeAllEvent_seconds_count",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "AllEvent",
           "refId": "B"
         },
         {
           "expr": "application_EventResource_timeCreateEvent_seconds_count",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "CreateEvent",
           "refId": "C"
         },
         {
           "expr": "application_EventResource_timeGetEvent_seconds_count",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "GetEvent",
           "refId": "D"
         },
         {
           "expr": "application_EventResource_timeReserveEvent_seconds_count",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "ReserveEvent",
           "refId": "E"
         },
         {
           "expr": "application_EventResource_timeUpdateEvent_seconds_count",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "UpdateEvent",
           "refId": "F"
+        },
+        {
+          "expr": "application_ReservationResource_createReservation_seconds_count",
+          "interval": "",
+          "legendFormat": "createReservation",
+          "refId": "G"
+        },
+        {
+          "expr": "application_ReservationResource_getReservation_seconds_count",
+          "interval": "",
+          "legendFormat": "getReservation",
+          "refId": "H"
         }
       ],
       "thresholds": [],
@@ -201,117 +413,105 @@
       }
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
-        "h": 12,
+        "h": 8,
         "w": 21,
         "x": 0,
-        "y": 20
+        "y": 28
       },
-      "hiddenSeries": false,
-      "id": 3,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
+      "id": 7,
       "options": {
-        "alertThreshold": true
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true
       },
-      "percentage": false,
       "pluginVersion": "7.3.6",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
       "targets": [
         {
-          "expr": "application_EventResource_timeAllEvent_rate_per_second",
+          "expr": "application_EventResource_timeAllEvent_max_seconds",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "AllEvent",
+          "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "application_EventResource_timeCreateEvent_rate_per_second",
+          "expr": "application_EventResource_timeCreateEvent_max_seconds",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "CreateEvent",
           "refId": "B"
         },
         {
-          "expr": "application_EventResource_timeGetEvent_rate_per_second",
+          "expr": "application_EventResource_timeGetEvent_max_seconds",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "GetEvent",
           "refId": "C"
         },
         {
-          "expr": "application_EventResource_timeReserveEvent_rate_per_second",
+          "expr": "application_EventResource_timeGetRandomEvent_max_seconds",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "GetRandomEvent",
           "refId": "D"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Rate per second",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
         },
         {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
+          "expr": "application_EventResource_timeUpdateEvent_max_seconds",
+          "interval": "",
+          "legendFormat": "UpdateEvent",
+          "refId": "E"
+        },
+        {
+          "expr": "application_EventResource_timeReserveEvent_max_seconds",
+          "interval": "",
+          "legendFormat": "ReserveEvent",
+          "refId": "H"
+        },
+        {
+          "expr": "application_ReservationResource_createReservation_max_seconds",
+          "interval": "",
+          "legendFormat": "createReservation",
+          "refId": "F"
+        },
+        {
+          "expr": "application_ReservationResource_getReservation_max_seconds",
+          "interval": "",
+          "legendFormat": "getReservation",
+          "refId": "G"
         }
       ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "max_seconds",
+      "type": "bargauge"
     }
   ],
   "refresh": "5s",
@@ -322,7 +522,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
