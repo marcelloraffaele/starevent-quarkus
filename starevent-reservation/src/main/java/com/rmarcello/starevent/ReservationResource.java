@@ -28,6 +28,8 @@ import com.rmarcello.starevent.services.ReservationService;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Timeout;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.jboss.logging.Logger;
 
 @Path("/api/reservation")
@@ -53,6 +55,7 @@ public class ReservationResource {
 
     @GET
     @Path("/{id}")
+    @Timed(name = "ReservationResource_getReservation", absolute = true, description = "Times how long it takes to invoke the getReservation method", unit = MetricUnits.MILLISECONDS)
     public Response getReservation(@PathParam("id") Long id) {
         Optional<Reservation> reservation = service.getReservationById(id);
         if (reservation.isPresent()) {
@@ -66,6 +69,7 @@ public class ReservationResource {
 
     @GET
     @Path("/user/{userId}")
+    @Timed(name = "ReservationResource_getReservationByUserId", absolute = true, description = "Times how long it takes to invoke the getReservationByUserId method", unit = MetricUnits.MILLISECONDS)
     public Response getReservationByUserId(@PathParam("userId") String userId) {
         List<Reservation> list = service.getAllByUserId(userId);
         return Response.ok(list).build();
@@ -74,6 +78,7 @@ public class ReservationResource {
     @Timeout(value = 5000, unit = ChronoUnit.MILLIS)
     @Fallback(fallbackMethod = "fallbackCreateReservation")
     @CircuitBreaker(successThreshold = 10, requestVolumeThreshold = 4, failureRatio=0.5, delay = 1000)
+    @Timed(name = "ReservationResource_createReservation", absolute = true, description = "Times how long it takes to invoke the createReservation method", unit = MetricUnits.MILLISECONDS)
     @POST
     public Response createReservation(@Valid CreateReservationIn req, @Context UriInfo uriInfo) {
         LOGGER.info("createReservation - START - req=" + req);
