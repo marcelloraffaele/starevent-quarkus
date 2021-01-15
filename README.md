@@ -7,7 +7,7 @@ Images are already pushed on Docker hub, you can use it and jump "image build".
 
 You can try it directly from Play with docker from: 
 
-[![Try in PWD](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://github.com/marcelloraffaele/starevent-quarkus/blob/main/docker/docker-compose.yaml)
+[![Try in PWD](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/marcelloraffaele/starevent-quarkus/main/docker/docker-compose.yaml)
 
 Otherwise, you can try it on your machine. You can run the application with docker compose:
 ```
