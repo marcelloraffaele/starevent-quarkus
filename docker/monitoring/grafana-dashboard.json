@@ -64,50 +64,50 @@
       "pluginVersion": "7.3.6",
       "targets": [
         {
-          "expr": "application_EventResource_timeAllEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeAllEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "AllEvent",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "application_EventResource_timeCreateEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeCreateEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "CreateEvent",
           "refId": "B"
         },
         {
-          "expr": "application_EventResource_timeGetEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeGetEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "GetEvent",
           "refId": "C"
         },
         {
-          "expr": "application_EventResource_timeGetRandomEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeGetRandomEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "GetRandomEvent",
           "refId": "D"
         },
         {
-          "expr": "application_EventResource_timeUpdateEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeUpdateEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "UpdateEvent",
           "refId": "E"
         },
         {
-          "expr": "application_EventResource_timeReserveEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeReserveEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "ReserveEvent",
           "refId": "H"
         },
         {
-          "expr": "application_ReservationResource_createReservation_rate_per_second",
+          "expr": "avg(application_ReservationResource_createReservation_rate_per_second)",
           "interval": "",
           "legendFormat": "createReservation",
           "refId": "F"
         },
         {
-          "expr": "application_ReservationResource_getReservation_rate_per_second",
+          "expr": "avg(application_ReservationResource_getReservation_rate_per_second)",
           "interval": "",
           "legendFormat": "getReservation",
           "refId": "G"
@@ -163,7 +163,7 @@
         "max": false,
         "min": false,
         "show": true,
-        "total": false,
+        "total)": false,
         "values": false
       },
       "lines": true,
@@ -183,50 +183,50 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "application_EventResource_timeAllEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeAllEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "AllEvent",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "application_EventResource_timeCreateEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeCreateEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "CreateEvent",
           "refId": "B"
         },
         {
-          "expr": "application_EventResource_timeGetEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeGetEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "GetEvent",
           "refId": "C"
         },
         {
-          "expr": "application_EventResource_timeGetRandomEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeGetRandomEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "GetRandomEvent",
           "refId": "D"
         },
         {
-          "expr": "application_EventResource_timeUpdateEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeUpdateEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "UpdateEvent",
           "refId": "E"
         },
         {
-          "expr": "application_EventResource_timeReserveEvent_rate_per_second",
+          "expr": "avg(application_EventResource_timeReserveEvent_rate_per_second)",
           "interval": "",
           "legendFormat": "ReserveEvent",
           "refId": "H"
         },
         {
-          "expr": "application_ReservationResource_createReservation_rate_per_second",
+          "expr": "avg(application_ReservationResource_createReservation_rate_per_second)",
           "interval": "",
           "legendFormat": "createReservation",
           "refId": "F"
         },
         {
-          "expr": "application_ReservationResource_getReservation_rate_per_second",
+          "expr": "avg(application_ReservationResource_getReservation_rate_per_second)",
           "interval": "",
           "legendFormat": "getReservation",
           "refId": "G"
@@ -302,7 +302,7 @@
         "max": false,
         "min": false,
         "show": true,
-        "total": false,
+        "total)": false,
         "values": false
       },
       "lines": true,
@@ -322,50 +322,50 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "application_EventResource_countDeleteEvent_total",
+          "expr": "avg(application_EventResource_countDeleteEvent_total)",
           "interval": "",
           "legendFormat": "DeleteEvent",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "application_EventResource_timeAllEvent_seconds_count",
+          "expr": "avg(application_EventResource_timeAllEvent_seconds_count)",
           "interval": "",
           "legendFormat": "AllEvent",
           "refId": "B"
         },
         {
-          "expr": "application_EventResource_timeCreateEvent_seconds_count",
+          "expr": "avg(application_EventResource_timeCreateEvent_seconds_count)",
           "interval": "",
           "legendFormat": "CreateEvent",
           "refId": "C"
         },
         {
-          "expr": "application_EventResource_timeGetEvent_seconds_count",
+          "expr": "avg(application_EventResource_timeGetEvent_seconds_count)",
           "interval": "",
           "legendFormat": "GetEvent",
           "refId": "D"
         },
         {
-          "expr": "application_EventResource_timeReserveEvent_seconds_count",
+          "expr": "avg(application_EventResource_timeReserveEvent_seconds_count)",
           "interval": "",
           "legendFormat": "ReserveEvent",
           "refId": "E"
         },
         {
-          "expr": "application_EventResource_timeUpdateEvent_seconds_count",
+          "expr": "avg(application_EventResource_timeUpdateEvent_seconds_count)",
           "interval": "",
           "legendFormat": "UpdateEvent",
           "refId": "F"
         },
         {
-          "expr": "application_ReservationResource_createReservation_seconds_count",
+          "expr": "avg(application_ReservationResource_createReservation_seconds_count)",
           "interval": "",
           "legendFormat": "createReservation",
           "refId": "G"
         },
         {
-          "expr": "application_ReservationResource_getReservation_seconds_count",
+          "expr": "avg(application_ReservationResource_getReservation_seconds_count)",
           "interval": "",
           "legendFormat": "getReservation",
           "refId": "H"
@@ -459,50 +459,50 @@
       "pluginVersion": "7.3.6",
       "targets": [
         {
-          "expr": "application_EventResource_timeAllEvent_max_seconds",
+          "expr": "avg(application_EventResource_timeAllEvent_max_seconds)",
           "interval": "",
           "legendFormat": "AllEvent",
           "queryType": "randomWalk",
           "refId": "A"
         },
         {
-          "expr": "application_EventResource_timeCreateEvent_max_seconds",
+          "expr": "avg(application_EventResource_timeCreateEvent_max_seconds)",
           "interval": "",
           "legendFormat": "CreateEvent",
           "refId": "B"
         },
         {
-          "expr": "application_EventResource_timeGetEvent_max_seconds",
+          "expr": "avg(application_EventResource_timeGetEvent_max_seconds)",
           "interval": "",
           "legendFormat": "GetEvent",
           "refId": "C"
         },
         {
-          "expr": "application_EventResource_timeGetRandomEvent_max_seconds",
+          "expr": "avg(application_EventResource_timeGetRandomEvent_max_seconds)",
           "interval": "",
           "legendFormat": "GetRandomEvent",
           "refId": "D"
         },
         {
-          "expr": "application_EventResource_timeUpdateEvent_max_seconds",
+          "expr": "avg(application_EventResource_timeUpdateEvent_max_seconds)",
           "interval": "",
           "legendFormat": "UpdateEvent",
           "refId": "E"
         },
         {
-          "expr": "application_EventResource_timeReserveEvent_max_seconds",
+          "expr": "avg(application_EventResource_timeReserveEvent_max_seconds)",
           "interval": "",
           "legendFormat": "ReserveEvent",
           "refId": "H"
         },
         {
-          "expr": "application_ReservationResource_createReservation_max_seconds",
+          "expr": "avg(application_ReservationResource_createReservation_max_seconds)",
           "interval": "",
           "legendFormat": "createReservation",
           "refId": "F"
         },
         {
-          "expr": "application_ReservationResource_getReservation_max_seconds",
+          "expr": "avg(application_ReservationResource_getReservation_max_seconds)",
           "interval": "",
           "legendFormat": "getReservation",
           "refId": "G"
@@ -510,7 +510,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "max_seconds",
+      "title": "max_seconds)",
       "type": "bargauge"
     }
   ],

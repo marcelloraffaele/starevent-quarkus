@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+  labels:
+    project: mysql-test
+type: Opaque
+stringData:
+  rootpassword: password
+  eventdbpassword: eventdb
+  reservationdbpassword: reservationdb
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+  labels:
+    project: mysql-test
+data:
+  init.sql: "CREATE DATABASE eventdb;\r\n
+    CREATE USER 'eventdb' IDENTIFIED BY 'eventdb';\r\n
+    GRANT ALL PRIVILEGES ON eventdb.* TO 'eventdb';\r\n
+    FLUSH PRIVILEGES;\r\n
+    USE eventdb;\r\n
+    DROP TABLE IF EXISTS `event`;\r\n
+    CREATE TABLE `event` (\r\n  `id` bigint NOT NULL AUTO_INCREMENT,\r\n
+    \ `title` varchar(200) NOT NULL,\r\n  `artist` varchar(100) DEFAULT NULL,\r\n
+    \ `description` varchar(500) DEFAULT NULL,\r\n  `start_date` datetime DEFAULT
+    NULL,\r\n  `location` varchar(200) DEFAULT NULL,\r\n  `address` varchar(200) DEFAULT
+    NULL,\r\n  `price` float NOT NULL,\r\n  `availability` int NOT NULL,\r\n  `img`
+    varchar(500) DEFAULT NULL,\r\n  PRIMARY KEY (`id`)\r\n) ENGINE=InnoDB DEFAULT
+    CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;\r\n\r\n
+    INSERT INTO `event` ( `title`, `artist`, `description`, `start_date`, `location`, `address`, `price`, `availability`, `img`) VALUES\r\n
+    ('Foo Fighters',\t'Foo Fighters',\t'Riconfermati i Foo Fghters nell ambito di I-Days Milano 2021. Scopri i dettagli!',\t'2021-06-12 17:00:00',\t'Milano',\t'I-DAYS',\t74.50,\t1000,\t'img/ff.jpg'),\r\n
+    ('Deep Purple',\t'Deep Purple THE WHOOSH! TOUR',\t'Deep Purple THE WHOOSH! TOUR',\t'2021-07-06 21:00:00',\t'w2',\t'a2',\t57.50,\t1000,\t'img/dp.jpg'),\r\n('James Blunt Once upon a tour',\t'James Blunt',\t'James Blunt ONCE UPON A MIND TOUR',\t'2021-06-27 21:15:00',\t'Milano',\t'Mediolanum forum',\t80.50,\t700,\t'img/jb.jpg'),\r\n
+    ('Vasco Non stop live festival',\t'Vasco Rossi',\t'Vasco Non stop live festival',\t'2021-06-27 21:15:00',\t'Firenze',\t'Visarno Arena',\t80.50,\t700,\t'img/vr.jpg'),\r\n
+    ('Hans Zimmer',\t'Hans Zimmer',\t'd2',\t'2022-03-30 19:42:22',\t'ASSAGO',\t'Mediolanum Forum',\t103.50,\t1000,\t'img/hz.jpg'),\r\n
+    ('Carmen Consoli - Tour 2021',\t'Carmen Consoli',\t'Carmen Consoli torna con un nuovo tour nel 2021! Acquista subito il tuo biglietto!',\t'2021-12-26 21:00:00',\t'Roma',\t'Auditorium Parco della Musica - Sala Santa Cecilia',\t46,\t1000,\t'img/cc.jpg');"

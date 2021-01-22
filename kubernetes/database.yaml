@@ -1,0 +1,81 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mysql
+    project: starevent
+  name: starevent-db
+spec:
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+  selector:
+    app: mysql
+    project: starevent
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    project: starevent
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+    project: starevent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+        project: starevent
+    spec:
+      containers:
+      - name: database
+        image: mysql:8.0.22
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: rootpassword
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+        ports:
+          - containerPort: 3306
+        volumeMounts:
+        #volume mount for the init sql script
+          - name: init-config
+            mountPath: "/docker-entrypoint-initdb.d"
+            readOnly: true
+        #volume mount for data
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysql
+      volumes:
+        - name: init-config
+          configMap:
+            name: mysql-configmap
+            items:
+              - key: "init.sql"
+                path: "init.sql"
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
