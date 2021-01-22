@@ -1,0 +1,100 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8082"
+    app.quarkus.io/commit-id: 39a1f47d59290d86aed08d5dfde0ab5b8890ffcf
+    app.quarkus.io/vcs-url: https://github.com/marcelloraffaele/starevent-quarkus.git
+    app.quarkus.io/build-timestamp: 2021-01-10 - 21:46:30 +0000
+    prometheus.io/scrape: "true"
+  labels:
+    app.kubernetes.io/name: starevent-reservation
+    app.kubernetes.io/version: 1.1-monitoring
+  name: starevent-reservation
+spec:
+  ports:
+  - name: http
+    port: 8082
+    targetPort: 8082
+  selector:
+    app.kubernetes.io/name: starevent-reservation
+    app.kubernetes.io/version: 1.1-monitoring
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8082"
+    app.quarkus.io/commit-id: 39a1f47d59290d86aed08d5dfde0ab5b8890ffcf
+    app.quarkus.io/vcs-url: https://github.com/marcelloraffaele/starevent-quarkus.git
+    app.quarkus.io/build-timestamp: 2021-01-10 - 21:46:30 +0000
+    prometheus.io/scrape: "true"
+  labels:
+    app.kubernetes.io/version: 1.1-monitoring
+    app.kubernetes.io/name: starevent-reservation
+  name: starevent-reservation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/version: 1.1-monitoring
+      app.kubernetes.io/name: starevent-reservation
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8082"
+        app.quarkus.io/commit-id: 39a1f47d59290d86aed08d5dfde0ab5b8890ffcf
+        app.quarkus.io/vcs-url: https://github.com/marcelloraffaele/starevent-quarkus.git
+        app.quarkus.io/build-timestamp: 2021-01-10 - 21:46:30 +0000
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/version: 1.1-monitoring
+        app.kubernetes.io/name: starevent-reservation
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: QUARKUS_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: reservationdbpassword
+        - name: QUARKUS_DATASOURCE_JDBC_URL
+          value: jdbc:mysql://starevent-db:3306/reservationdb
+        - name: COM_RMARCELLO_STAREVENT_CLIENT_EVENTSPROXY_MP_REST_URL
+          value: http://starevent-event:8081
+        image: rmarcello/starevent-reservation:1.1-monitoring
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/live
+            port: 8082
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: starevent-reservation
+        ports:
+        - containerPort: 8082
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/ready
+            port: 8082
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10

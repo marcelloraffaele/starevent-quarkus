@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.quarkus.io/vcs-url: https://github.com/marcelloraffaele/starevent-quarkus.git
+    app.quarkus.io/build-timestamp: 2021-01-10 - 21:47:21 +0000
+    app.quarkus.io/commit-id: 39a1f47d59290d86aed08d5dfde0ab5b8890ffcf
+  labels:
+    app.kubernetes.io/name: starevent-frontend
+    app.kubernetes.io/version: 1.1-monitoring
+  name: starevent-frontend
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: starevent-frontend
+    app.kubernetes.io/version: 1.1-monitoring
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.quarkus.io/vcs-url: https://github.com/marcelloraffaele/starevent-quarkus.git
+    app.quarkus.io/build-timestamp: 2021-01-10 - 21:47:21 +0000
+    app.quarkus.io/commit-id: 39a1f47d59290d86aed08d5dfde0ab5b8890ffcf
+  labels:
+    app.kubernetes.io/version: 1.1-monitoring
+    app.kubernetes.io/name: starevent-frontend
+  name: starevent-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/version: 1.1-monitoring
+      app.kubernetes.io/name: starevent-frontend
+  template:
+    metadata:
+      annotations:
+        app.quarkus.io/vcs-url: https://github.com/marcelloraffaele/starevent-quarkus.git
+        app.quarkus.io/build-timestamp: 2021-01-10 - 21:47:21 +0000
+        app.quarkus.io/commit-id: 39a1f47d59290d86aed08d5dfde0ab5b8890ffcf
+      labels:
+        app.kubernetes.io/version: 1.1-monitoring
+        app.kubernetes.io/name: starevent-frontend
+    spec:
+      containers:
+      - env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: COM_RMARCELLO_STAREVENT_CLIENT_EVENT_EVENTSPROXY_MP_REST_URL
+          value: http://starevent-event:8081
+        - name: COM_RMARCELLO_STAREVENT_CLIENT_RESERVATION_RESERVATIONPROXY_MP_REST_URL
+          value: http://starevent-reservation:8082  
+        image: rmarcello/starevent-frontend:1.1-monitoring
+        imagePullPolicy: Always
+        name: starevent-frontend
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
