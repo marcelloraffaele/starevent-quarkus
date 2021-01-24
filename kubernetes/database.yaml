@@ -30,7 +30,7 @@ spec:
       storage: 2Gi
 ---
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
   name: mysql
   labels:
