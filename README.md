@@ -1,7 +1,17 @@
 # starevent-quarkus
-A microservices event booking application developed using Quarkus
+Starevent-quarkus is a microservices event booking application developed using Quarkus.
+This project is a simple use case of a web application for the management of events related to concerts.
+The code was made to show how to create microservices architecture using Quarkus as Cloud Native Stack. The code was discussed inside the following post:
+- https://marcelloraffaele.github.io/from-microservices-to-kubernetes-with-quarkus-1/
+- https://marcelloraffaele.github.io/from-microservices-to-kubernetes-with-quarkus-2/
 
-Images are already pushed on Docker hub, you can use it and jump "image build".
+
+Docker Images are already pushed on Docker hub, you can use it and jump "image build".
+If you want to test the application, you can clone the repository and work directly on folders:
+- docker: a set docker-compose descriptor and other configuration file to run the application into Docker
+- kubernetes: a set of kubernetes descriptor that you can use to run the application.
+
+
 
 ## Deploy on Docker
 
@@ -11,6 +21,11 @@ cd docker
 docker-compose -f docker-compose.yaml up -d
 ```
 Now you can test the application! Open a browser on http://localhost:8080 or invoke rest services by CURL.
+
+You can see the prometheus page visiting [http://127.0.0.1:9090](http://127.0.0.1:9090).
+
+You can see the grafana page visiting [http://127.0.0.1:3000](http://127.0.0.1:3000) and set default user and password (admin/admin).
+
 When you finish testing you can clean everything:
 ```
 docker-compose -f docker-compose.yaml down
@@ -22,12 +37,22 @@ docker-compose -f docker-compose.yaml down
 Let's start the application with docker compose:
 ```
 cd kubernetes
-kubectl apply -f application.yaml
+kubectl apply -f database-config.yaml
+kubectl apply -f database.yaml
+kubectl apply -f application-event.yaml
+kubectl apply -f application-reservation.yaml
+kubectl apply -f application-frontend.yaml
+kubectl apply -f monitoring.yaml
 ```
 Now you can test the application! Open a browser on http://localhost:8080 or invoke rest services by CURL.
 When you finish testing you can clean everything:
 ```
-kubectl delete -f application.yaml
+kubectl delete -f monitoring.yaml
+kubectl delete -f application-frontend.yaml
+kubectl delete -f application-reservation.yaml
+kubectl delete -f application-event.yaml
+kubectl delete -f database.yaml
+kubectl delete -f database-config.yaml
 ```
 
 ## Testing the application 
