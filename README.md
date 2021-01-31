@@ -15,11 +15,7 @@ If you want to test the application, you can clone the repository and work direc
 
 ## Deploy on Docker
 
-You can try it directly from Play with docker from: 
-
-[![Try in PWD](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/marcelloraffaele/starevent-quarkus/main/docker/pwd-docker-compose.yml)
-
-Otherwise, you can try it on your machine. You can run the application with docker compose:
+You can run the application with docker compose:
 ```
 cd docker
 docker-compose -f docker-compose.yaml up -d
